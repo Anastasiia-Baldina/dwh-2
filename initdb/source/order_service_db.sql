@@ -1,5 +1,4 @@
 \connect order_service_db;
--- Auto-generated source tables DDL
 -- database: order_service_db
 
 CREATE TABLE IF NOT EXISTS public.orders (
@@ -29,9 +28,6 @@ CREATE TABLE IF NOT EXISTS public.orders (
   created_by         varchar,
   updated_by         varchar
 );
-
--- NOTE: cross-db ref skipped for public.orders.user_external_id -> user_service_db.users.user_external_id
--- NOTE: cross-db ref skipped for public.orders.delivery_address_external_id -> user_service_db.user_addresses.address_external_id
 
 CREATE TABLE IF NOT EXISTS public.products (
   product_id         serial PRIMARY KEY,

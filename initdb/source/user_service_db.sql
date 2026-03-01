@@ -1,5 +1,4 @@
 \connect user_service_db;
--- Auto-generated source tables DDL
 -- database: user_service_db
 
 CREATE TABLE IF NOT EXISTS public.users (

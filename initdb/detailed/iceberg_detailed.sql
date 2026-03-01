@@ -1,11 +1,6 @@
--- Auto-generated DETAILED DV2 DDL for Trino + Iceberg
--- warehouse base: s3://detailed/warehouse
+-- Auto-generated DETAILED layer DDL for Trino + Iceberg
 
--- ==============================
 -- DETAILED layer: user_service_db
--- ==============================
-
--- Trino/Iceberg schema (namespace)
 CREATE SCHEMA IF NOT EXISTS iceberg.user_service_db WITH (location = 's3://detailed/warehouse/user_service_db');
 
 -- Hubs
@@ -77,11 +72,7 @@ CREATE TABLE IF NOT EXISTS iceberg.user_service_db.lnk_address_user (
   record_source varchar
 );
 
--- ==============================
 -- DETAILED layer: order_service_db
--- ==============================
-
--- Trino/Iceberg schema (namespace)
 CREATE SCHEMA IF NOT EXISTS iceberg.order_service_db WITH (location = 's3://detailed/warehouse/order_service_db');
 
 -- Hubs
@@ -171,11 +162,7 @@ CREATE TABLE IF NOT EXISTS iceberg.order_service_db.lnk_order_address (
   record_source varchar
 );
 
--- ==============================
 -- DETAILED layer: logistics_service_db
--- ==============================
-
--- Trino/Iceberg schema (namespace)
 CREATE SCHEMA IF NOT EXISTS iceberg.logistics_service_db WITH (location = 's3://detailed/warehouse/logistics_service_db');
 
 -- Hubs

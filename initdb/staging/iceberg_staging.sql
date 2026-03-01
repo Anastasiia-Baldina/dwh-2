@@ -1,10 +1,6 @@
--- Auto-generated STAGING DDL for Trino + Iceberg
--- warehouse base: s3://staging/warehouse
--- SERIAL mapped to BIGINT (Trino has no SERIAL)
+-- Auto-generated STAGING layer DDL 
 
--- ==============================
--- STAGING namespace: user_service_db
--- ==============================
+-- STAGING layer: user_service_db
 CREATE SCHEMA IF NOT EXISTS iceberg.user_service_db WITH (location = 's3://staging/warehouse/user_service_db');
 
 -- from source table: user_service_db.users
@@ -84,9 +80,7 @@ CREATE TABLE IF NOT EXISTS iceberg.user_service_db.user_status_history (
   __record_source                varchar
 );
 
--- ==============================
--- STAGING namespace: order_service_db
--- ==============================
+-- STAGING layer: order_service_db
 CREATE SCHEMA IF NOT EXISTS iceberg.order_service_db WITH (location = 's3://staging/warehouse/order_service_db');
 
 -- from source table: order_service_db.orders
@@ -200,9 +194,7 @@ CREATE TABLE IF NOT EXISTS iceberg.order_service_db.order_status_history (
   __record_source                varchar
 );
 
--- ==============================
--- STAGING namespace: logistics_service_db
--- ==============================
+-- STAGING layer: logistics_service_db
 CREATE SCHEMA IF NOT EXISTS iceberg.logistics_service_db WITH (location = 's3://staging/warehouse/logistics_service_db');
 
 -- from source table: logistics_service_db.warehouses

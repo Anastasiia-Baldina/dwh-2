@@ -1,5 +1,4 @@
 \connect logistics_service_db;
--- Auto-generated source tables DDL
 -- database: logistics_service_db
 
 CREATE TABLE IF NOT EXISTS public.warehouses (
@@ -80,9 +79,6 @@ CREATE TABLE IF NOT EXISTS public.shipments (
   CONSTRAINT fk_shipments__origin_warehouse_code FOREIGN KEY (origin_warehouse_code) REFERENCES public.warehouses(warehouse_code),
   CONSTRAINT fk_shipments__destination_pickup_point_code FOREIGN KEY (destination_pickup_point_code) REFERENCES public.pickup_points(pickup_point_code)
 );
-
--- NOTE: cross-db ref skipped for public.shipments.order_external_id -> order_service_db.orders.order_external_id
--- NOTE: cross-db ref skipped for public.shipments.destination_address_external_id -> user_service_db.user_addresses.address_external_id
 
 CREATE TABLE IF NOT EXISTS public.shipment_movements (
   movement_id        serial PRIMARY KEY,
