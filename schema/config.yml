@@ -1,0 +1,623 @@
+version: 1
+
+tech_cols:
+  staging:
+    __op:
+      type: "varchar"
+    __ts_ms:
+      type: "bigint"
+    __kafka_topic:
+      type: "varchar"
+    __kafka_partition:
+      type: "int"
+    __kafka_offset:
+      type: "bigint"
+    __ingest_dts:
+      type: "timestamp"
+    __record_source:
+      type: "varchar"
+
+sources:
+  - database: user_service_db
+    schema: public
+    tables:
+      - name: users
+        columns:
+          user_id:
+            type: "serial"
+            pk: true
+          user_external_id:
+            type: "uuid"
+            bk: true
+          email:
+            type: "varchar"
+          first_name:
+            type: "varchar"
+          last_name:
+            type: "varchar"
+          phone:
+            type: "varchar"
+          date_of_birth:
+            type: "date"
+          registration_date:
+            type: "timestamp"
+          status:
+            type: "varchar"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: user_addresses
+        columns:
+          address_id:
+            type: "serial"
+            pk: true
+          address_external_id:
+            type: "uuid"
+            bk: true
+          user_external_id:
+            type: "uuid"
+            ref: "user_service_db.users.user_external_id"
+          address_type:
+            type: "varchar"
+          country:
+            type: "varchar"
+          region:
+            type: "varchar"
+          city:
+            type: "varchar"
+          street_address:
+            type: "varchar"
+          postal_code:
+            type: "varchar"
+          apartment:
+            type: "varchar"
+          is_default:
+            type: "boolean"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: user_status_history
+        columns:
+          history_id:
+            type: "serial"
+            pk: true
+          user_external_id:
+            type: "uuid"
+            ref: "user_service_db.users.user_external_id"
+          old_status:
+            type: "varchar"
+          new_status:
+            type: "varchar"
+          change_reason:
+            type: "varchar"
+          changed_at:
+            type: "timestamp"
+          changed_by:
+            type: "varchar"
+          session_id:
+            type: "varchar"
+          ip_address:
+            type: "inet"
+          user_agent:
+            type: "text"
+
+  - database: order_service_db
+    schema: public
+    tables:
+      - name: orders
+        columns:
+          order_id:
+            type: "serial"
+            pk: true
+          order_external_id:
+            type: "uuid"
+            bk: true
+          user_external_id:
+            type: "uuid"
+            ref: "user_service_db.users.user_external_id"
+          order_number:
+            type: "varchar"
+          order_date:
+            type: "timestamp"
+          status:
+            type: "varchar"
+          subtotal:
+            type: "decimal"
+          tax_amount:
+            type: "decimal"
+          shipping_cost:
+            type: "decimal"
+          discount_amount:
+            type: "decimal"
+          total_amount:
+            type: "decimal"
+          currency:
+            type: "varchar"
+          delivery_address_external_id:
+            type: "uuid"
+            ref: "user_service_db.user_addresses.address_external_id"
+          delivery_type:
+            type: "varchar"
+          expected_delivery_date:
+            type: "date"
+          actual_delivery_date:
+            type: "date"
+          payment_method:
+            type: "varchar"
+          payment_status:
+            type: "varchar"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: products
+        columns:
+          product_id:
+            type: "serial"
+            pk: true
+          product_sku:
+            type: "varchar"
+            bk: true
+          product_name:
+            type: "varchar"
+          category:
+            type: "varchar"
+          brand:
+            type: "varchar"
+          price:
+            type: "decimal"
+          currency:
+            type: "varchar"
+          weight_grams:
+            type: "integer"
+          dimensions_length_cm:
+            type: "decimal"
+          dimensions_width_cm:
+            type: "decimal"
+          dimensions_height_cm:
+            type: "decimal"
+          is_active:
+            type: "boolean"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: order_items
+        columns:
+          order_item_id:
+            type: "serial"
+            pk: true
+          order_external_id:
+            type: "uuid"
+            ref: "order_service_db.orders.order_external_id"
+          product_sku:
+            type: "varchar"
+            ref: "order_service_db.products.product_sku"
+          quantity:
+            type: "integer"
+          unit_price:
+            type: "decimal"
+          total_price:
+            type: "decimal"
+          product_name_snapshot:
+            type: "varchar"
+          product_category_snapshot:
+            type: "varchar"
+          product_brand_snapshot:
+            type: "varchar"
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: order_status_history
+        columns:
+          history_id:
+            type: "serial"
+            pk: true
+          order_external_id:
+            type: "uuid"
+            ref: "order_service_db.orders.order_external_id"
+          old_status:
+            type: "varchar"
+          new_status:
+            type: "varchar"
+          change_reason:
+            type: "varchar"
+          changed_at:
+            type: "timestamp"
+          changed_by:
+            type: "varchar"
+          session_id:
+            type: "varchar"
+          ip_address:
+            type: "inet"
+          notes:
+            type: "text"
+
+  - database: logistics_service_db
+    schema: public
+    tables:
+      - name: warehouses
+        columns:
+          warehouse_id:
+            type: "serial"
+            pk: true
+          warehouse_code:
+            type: "varchar"
+            bk: true
+          warehouse_name:
+            type: "varchar"
+          warehouse_type:
+            type: "varchar"
+          country:
+            type: "varchar"
+          region:
+            type: "varchar"
+          city:
+            type: "varchar"
+          street_address:
+            type: "varchar"
+          postal_code:
+            type: "varchar"
+          is_active:
+            type: "boolean"
+          max_capacity_cubic_meters:
+            type: "decimal"
+          operating_hours:
+            type: "varchar"
+          contact_phone:
+            type: "varchar"
+          manager_name:
+            type: "varchar"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: pickup_points
+        columns:
+          pickup_point_id:
+            type: "serial"
+            pk: true
+          pickup_point_code:
+            type: "varchar"
+            bk: true
+          pickup_point_name:
+            type: "varchar"
+          pickup_point_type:
+            type: "varchar"
+          country:
+            type: "varchar"
+          region:
+            type: "varchar"
+          city:
+            type: "varchar"
+          street_address:
+            type: "varchar"
+          postal_code:
+            type: "varchar"
+          is_active:
+            type: "boolean"
+          max_capacity_packages:
+            type: "integer"
+          operating_hours:
+            type: "varchar"
+          contact_phone:
+            type: "varchar"
+          partner_name:
+            type: "varchar"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: shipments
+        columns:
+          shipment_id:
+            type: "serial"
+            pk: true
+          shipment_external_id:
+            type: "uuid"
+            bk: true
+          order_external_id:
+            type: "uuid"
+            ref: "order_service_db.orders.order_external_id"
+          tracking_number:
+            type: "varchar"
+          status:
+            type: "varchar"
+          weight_grams:
+            type: "integer"
+          volume_cubic_cm:
+            type: "integer"
+          package_count:
+            type: "integer"
+          origin_warehouse_code:
+            type: "varchar"
+            ref: "logistics_service_db.warehouses.warehouse_code"
+          destination_type:
+            type: "varchar"
+          destination_pickup_point_code:
+            type: "varchar"
+            ref: "logistics_service_db.pickup_points.pickup_point_code"
+          destination_address_external_id:
+            type: "uuid"
+            ref: "user_service_db.user_addresses.address_external_id"
+          created_date:
+            type: "timestamp"
+          dispatched_date:
+            type: "timestamp"
+          estimated_delivery_date:
+            type: "timestamp"
+          actual_delivery_date:
+            type: "timestamp"
+          delivery_notes:
+            type: "text"
+          recipient_name:
+            type: "varchar"
+          delivery_signature:
+            type: "varchar"
+          effective_from:
+            type: "timestamp"
+            scd2: true
+          effective_to:
+            type: "timestamp"
+            scd2: true
+          is_current:
+            type: "boolean"
+            scd2: true
+          created_at:
+            type: "timestamp"
+          updated_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+          updated_by:
+            type: "varchar"
+
+      - name: shipment_movements
+        columns:
+          movement_id:
+            type: "serial"
+            pk: true
+          shipment_external_id:
+            type: "uuid"
+            ref: "logistics_service_db.shipments.shipment_external_id"
+          movement_type:
+            type: "varchar"
+          location_type:
+            type: "varchar"
+          location_code:
+            type: "varchar"
+          movement_datetime:
+            type: "timestamp"
+          operator_name:
+            type: "varchar"
+          notes:
+            type: "text"
+          latitude:
+            type: "decimal"
+          longitude:
+            type: "decimal"
+          created_at:
+            type: "timestamp"
+          created_by:
+            type: "varchar"
+
+      - name: shipment_status_history
+        columns:
+          history_id:
+            type: "serial"
+            pk: true
+          shipment_external_id:
+            type: "uuid"
+            ref: "logistics_service_db.shipments.shipment_external_id"
+          old_status:
+            type: "varchar"
+          new_status:
+            type: "varchar"
+          change_reason:
+            type: "varchar"
+          changed_at:
+            type: "timestamp"
+          changed_by:
+            type: "varchar"
+          location_type:
+            type: "varchar"
+          location_code:
+            type: "varchar"
+          notes:
+            type: "text"
+          customer_notified:
+            type: "boolean"
+
+detailed_dv2:
+  hubs:
+    - name: hub_user
+      source_table: user_service_db.users
+      bk: [user_external_id]
+
+    - name: hub_address
+      source_table: user_service_db.user_addresses
+      bk: [address_external_id]
+
+    - name: hub_order
+      source_table: order_service_db.orders
+      bk: [order_external_id]
+
+    - name: hub_product
+      source_table: order_service_db.products
+      bk: [product_sku]
+
+    - name: hub_shipment
+      source_table: logistics_service_db.shipments
+      bk: [shipment_external_id]
+
+    - name: hub_warehouse
+      source_table: logistics_service_db.warehouses
+      bk: [warehouse_code]
+
+    - name: hub_pickup_point
+      source_table: logistics_service_db.pickup_points
+      bk: [pickup_point_code]
+
+  satellites:
+    - name: sat_user
+      hub: hub_user
+      source_table: user_service_db.users
+
+    - name: sat_address
+      hub: hub_address
+      source_table: user_service_db.user_addresses
+
+    - name: sat_order
+      hub: hub_order
+      source_table: order_service_db.orders
+
+    - name: sat_product
+      hub: hub_product
+      source_table: order_service_db.products
+
+    - name: sat_shipment
+      hub: hub_shipment
+      source_table: logistics_service_db.shipments
+
+    - name: sat_warehouse
+      hub: hub_warehouse
+      source_table: logistics_service_db.warehouses
+
+    - name: sat_pickup_point
+      hub: hub_pickup_point
+      source_table: logistics_service_db.pickup_points
+
+  links:
+    - name: lnk_order_user
+      source_table: order_service_db.orders
+      left_hub: hub_order
+      right_hub: hub_user
+      left_bk: [order_external_id]
+      right_bk: [user_external_id]
+
+    - name: lnk_address_user
+      source_table: user_service_db.user_addresses
+      left_hub: hub_address
+      right_hub: hub_user
+      left_bk: [address_external_id]
+      right_bk: [user_external_id]
+
+    - name: lnk_order_address
+      source_table: order_service_db.orders
+      left_hub: hub_order
+      right_hub: hub_address
+      left_bk: [order_external_id]
+      right_bk: [delivery_address_external_id]
+
+    - name: lnk_shipment_order
+      source_table: logistics_service_db.shipments
+      left_hub: hub_shipment
+      right_hub: hub_order
+      left_bk: [shipment_external_id]
+      right_bk: [order_external_id]
+
+    - name: lnk_shipment_warehouse
+      source_table: logistics_service_db.shipments
+      left_hub: hub_shipment
+      right_hub: hub_warehouse
+      left_bk: [shipment_external_id]
+      right_bk: [origin_warehouse_code]
+
+    - name: lnk_shipment_pickup_point
+      source_table: logistics_service_db.shipments
+      left_hub: hub_shipment
+      right_hub: hub_pickup_point
+      left_bk: [shipment_external_id]
+      right_bk: [destination_pickup_point_code]
