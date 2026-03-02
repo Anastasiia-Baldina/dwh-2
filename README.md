@@ -1,12 +1,13 @@
 ## Сделано
 1) Patroni кластер (master + async replica) на etcd (3 хоста)
-2) Debezium коннекторы к patroni-master (kafka + zookeeper) 
+2) Debezium коннекторы к patroni-master (kafka + zookeeper(3 хоста)) 
 3) DMP-service для перекладки данных из топиков kafka в staging
 4) Хранилище MinIO (S3)
 5) БД Iceberg (Postgres) для хранения реестра S3
 6) Контроллер iceberg
 7) Trino для управления запросами
-8) SQL-скрипт + контейнер для перекладки staging -> detailed (sql\load_staging_to_detailed.sql)
+8) Контейнер trino-init для создания схем данных staging и detailed (через выполнение DDL скриптов) 
+9) SQL-скрипт + контейнер для перекладки staging -> detailed (sql\load_staging_to_detailed.sql)
 
 ## Команды
 ### Сборка и запуск
