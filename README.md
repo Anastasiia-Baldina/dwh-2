@@ -6,7 +6,7 @@
 5) БД Iceberg (Postgres) для хранения реестра S3
 6) Контроллер iceberg
 7) Trino для управления запросами
-8) SQL-скрипт для перекладки staging -> detailed (sql\load_staging_to_detailed.sql)
+8) SQL-скрипт + контейнер для перекладки staging -> detailed (sql\load_staging_to_detailed.sql)
 
 ## Команды
 ### Сборка и запуск
