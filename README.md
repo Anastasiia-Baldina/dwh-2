@@ -1,3 +1,14 @@
+## Сделано
+1) Patroni кластер (master + async replica) на etcd (3 хоста)
+2) Debezium коннекторы к patroni-master (kafka + zookeeper) 
+3) DMP-service для перекладки данных из топиков kafka в staging
+4) Хранилище MinIO (S3)
+5) БД Iceberg (Postgres) для хранения реестра S3
+6) Контроллер iceberg
+7) Trino для управления запросами
+8) SQL-скрипт для перекладки staging -> detailed (sql\load_staging_to_detailed.sql)
+
+## Команды
 ### Сборка и запуск
 ```shell
 docker-compose up -d
@@ -7,7 +18,7 @@ docker-compose up -d
 docker-compose down -v
 ```
 
-### Заливка из staging в detailed Windows(PowerShell)
+### Заливка из staging в detailed Windows(PowerShell) sql\load_staging_to_detailed.sql
 ```shell
 Get-Content -Raw .\sql\load_staging_to_detailed.sql | docker exec -i trino trino --file /dev/stdin
 ```
