@@ -34,6 +34,8 @@ python scripts/generate_detailed_ddl.py
 ### Trino (staging/detailed)
 jdbc:trino://localhost:8088/iceberg/default?user=dmp
 
+##  ER-диаграмма для detailed (Data Vault 2)
+```mermaid
 erDiagram
   HUB_USER ||--o{ SAT_USER : has
   HUB_ADDRESS ||--o{ SAT_ADDRESS : has
@@ -223,3 +225,4 @@ erDiagram
     timestamp load_dts
     varchar record_source
   }
+```
