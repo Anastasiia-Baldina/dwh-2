@@ -456,6 +456,30 @@ services:
       - ./schema/config.yml:/schema/config.yml:ro
     restart: unless-stopped
 
+  staging-to-detailed:
+    image: trinodb/trino:451
+    container_name: staging-to-detailed
+    networks: [pgnet]
+    depends_on:
+      trino-init:
+        condition: service_completed_successfully
+      trino:
+        condition: service_started
+    volumes:
+      - ./sql/load_staging_to_detailed.sql:/sql/load_staging_to_detailed.sql:ro
+    restart: "no"
+    entrypoint:
+      - /bin/bash
+      - -lc
+      - |
+          set -euo pipefail
+          echo "Waiting for Trino..."
+          until trino --server http://trino:8080 --user dmp --execute "SELECT 1" >/dev/null 2>&1; do
+            sleep 2
+          done
+          echo "Running load_staging_to_detailed.sql..."
+          trino --server http://trino:8080 --user dmp --catalog iceberg --schema default --file /sql/load_staging_to_detailed.sql
+
 networks:
   pgnet:
 

@@ -17,10 +17,9 @@ docker-compose up -d
 ```shell
 docker-compose down -v
 ```
-
-### Заливка из staging в detailed Windows(PowerShell) sql\load_staging_to_detailed.sql
+### Запустить перенос staging -> detailed
 ```shell
-Get-Content -Raw .\sql\load_staging_to_detailed.sql | docker exec -i trino trino --file /dev/stdin
+docker compose run --rm staging-to-detailed
 ```
 
 ### Генерация DDL скриптов по схеме
