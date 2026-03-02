@@ -8,6 +8,7 @@
 7) Trino для управления запросами
 8) Контейнер trino-init для создания схем данных staging и detailed (через выполнение DDL скриптов) 
 9) SQL-скрипт + контейнер для перекладки staging -> detailed (sql\load_staging_to_detailed.sql)
+10) Python скрипты(scripts/generate_source_ddl.py, scripts/generate_staging_ddl.py, python scripts/generate_detailed_ddl.py) для создания DDL source, staging и detailed слоев по конфигурационному файлу schema/config.yml 
 
 ## Команды
 ### Сборка и запуск
