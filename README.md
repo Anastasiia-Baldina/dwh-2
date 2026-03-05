@@ -1,4 +1,4 @@
-## Сделано
+## Сделано (все пункты + бонусы)
 1) Patroni кластер (master + async replica) на etcd (3 хоста)
 2) Debezium коннекторы к patroni-master (kafka + zookeeper(3 хоста)) 
 3) DMP-service для перекладки данных из топиков kafka в staging
@@ -46,6 +46,7 @@ python scripts/generate_detailed_ddl.py
 ### Trino (staging/detailed)
 jdbc:trino://localhost:8088/iceberg/default?user=dmp
 
+## 
 ##  ER-диаграмма для detailed (Data Vault 2)
 ```mermaid
 erDiagram
@@ -238,3 +239,14 @@ erDiagram
     varchar record_source
   }
 ```
+
+## Обоснование выбора Data Vault 2
+
+### Сравнение с Data Vault 1
+1) Быстрое вычисление изменения данных по hash-diff вместо сравнения по всем полям.
+2) Быстрая загрузка инкримента, так как в Data Vault 2 записи добавляются без изменения старых (append only).
+
+### Сравнение с Anchor Modeling
+1) При добавлении таблиц, источников, связей добавляются новые элементы и целиком модель не перестраивается.
+2) D Data Vault 2 данные разделены по смыслу (hub, links, satellites) и проще для понимания
+3) В Data Vault 2 лучше реализован аудит, так как видно источник данных (_record_source) и время загрузки _load_dts 
