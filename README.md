@@ -31,6 +31,9 @@ python scripts/generate_source_ddl.py
 python scripts/generate_staging_ddl.py
 python scripts/generate_detailed_ddl.py
 ```
+1) scripts/generate_source_ddl.py - скрипт генерации DDL скрипта для слоя источника (Postgres). Выходные данные в initdb/source
+2) scripts/generate_staging_ddl.py - скрипт генерации DDL скрипта для слоя staging (Trino + iceberg). Выходные данные в initdb/staging
+3) scripts/generate_detailed_ddl.py - скрипт генерации DDL скрипта для слоя detailed (Trino + iceberg). Выходные данные в initdb/detailed
 
 ## Connection string (в формате jdbc, проверяла в DBeaver)
 ### Postgres Master (user=postgres,password=postgres)
@@ -250,3 +253,72 @@ erDiagram
 1) При добавлении таблиц, источников, связей добавляются новые элементы и целиком модель не перестраивается.
 2) D Data Vault 2 данные разделены по смыслу (hub, links, satellites) и проще для понимания
 3) В Data Vault 2 лучше реализован аудит, так как видно источник данных (_record_source) и время загрузки _load_dts 
+
+## Структура универсальной конфигурации модели schema/config.yaml для генерации DDL скриптов
+```
+version: <int> # Версия формата (для расширения/изменения)
+
+tech_cols:
+  staging:
+    - name: __op
+      type: <type>
+    - name: __ts_ms
+      type: <type>
+    - name: __record_source
+      type: <type>
+# Технические поля для STAGING:
+# - name/type: имя и тип тех.колонки
+# Эти колонки добавляются во все staging-таблицы (для CDC/аудита/источника записи)
+
+sources:
+  - database: <db_name>        # Имя базы источника 
+    schema: <schema_name>      # Схема источника
+    tables:
+      - name: <table_name>     # Имя таблицы источника
+        columns:
+          - name: <col>        # Имя колонки
+            type: <type>       # Тип колонки - переводится в нужный тип в зависимости от типа DB
+            pk: true|false     # Флаг что поле является primary key
+            bk: true|false     # Флаг что поле является business key
+            scd2: true|false   # Флаг что поле является SCD Type 2
+            ref: "<db>.<table>.<column>"  
+            # Ссылка на "родительскую" колонку (для FK в SOURCE внутри одной БД
+            # и для проверки связей при генерации DV2)
+
+detailed_dv2:
+  hubs:
+    - name: hub_<name>         # Имя HUB-таблицы
+      source_table: "<db>.<table>" 
+      # Из какой source-таблицы берём BK и контекст
+      bk:
+        - <bk_col>
+      # Список колонок business key, которые определяют сущность
+
+  satellites:
+    - name: sat_<name>         # Имя SAT-таблицы (атрибуты + история)
+      hub: hub_<name>          # К какому HUB привязан SAT 
+      source_table: "<db>.<table>"
+      # Из какой source-таблицы брать атрибуты
+
+  links:
+    - name: lnk_<name>         # Имя LINK-таблицы (связь между сущностями)
+      source_table: "<db>.<table>"
+      # Таблица-источник, где живёт связь (или факт связи)
+      left_hub: hub_<left>     # HUB слева (первая сущность)
+      right_hub: hub_<right>   # HUB справа (вторая сущность)
+      left_bk: <left_bk_col>   # Какая BK-колонка соответствует left_hub
+      right_bk: <right_bk_col> # Какая BK-колонка соответствует right_hub
+      # По этим BK строится связь и проверяется согласованность (через bk/ref)
+# Реализовано использование следующих <type>: 
+#   serial
+#   uuid
+#   varchar
+#   text
+#   boolean
+#   date
+#   timestamp
+#   integer
+#   bigint
+#   decimal
+#   inet      
+```  
